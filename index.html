@@ -140,7 +140,7 @@ const NGO={phone:"+91-XXXXXXXXXX",email:"your-email@example.com",area:"Bihar, In
 let appAuth=null,store=null,records=[],view="pending",lang="en";
 const el=id=>document.getElementById(id),isConfigured=firebaseConfig.apiKey!=="PASTE_API_KEY"&&firebaseConfig.projectId!=="PASTE_PROJECT_ID";
 // Show the admin sign-in screen only when the visitor opens /admin.panel.
-const adminRoute = /\/admin\.panel\/?$/.test(window.location.pathname);
+const adminRoute = window.location.hash === "#admin";
 if(adminRoute){el("admin").classList.remove("hidden");document.querySelector("header").classList.add("hidden");document.querySelectorAll("main > .wrap > .section:not(#admin)").forEach(n=>n.classList.add("hidden"));setTimeout(()=>el("admin").scrollIntoView(),50);}
 el("phoneText").textContent=NGO.phone;el("emailText").textContent=NGO.email;el("areaText").textContent=NGO.area;el("upiText").textContent=NGO.upi;el("donationName").textContent="Account name: "+NGO.accountName;el("year").textContent=new Date().getFullYear();
 if(NGO.qrImage){el("qrArea").innerHTML=`<img src="${NGO.qrImage}" alt="Official donation QR code" style="width:100%;height:100%;object-fit:contain">`;}
