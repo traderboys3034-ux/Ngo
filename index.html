@@ -1304,8 +1304,8 @@ function render() {
   document.getElementById('progressPct').textContent = pct+'%';
   document.getElementById('progressBar').style.width = pct+'%';
   document.getElementById('progressCounts').textContent = `${stats.complete} में से ${stats.total} पूरे`;
-  document.getElementById('progressLabel').textContent = isAll ? 'कुल Progress' : (dateSelect.value===todayISO?'आज का Progress':dateSelect.value===yesterdayISO?'कल का Progress':'इस दिन का Progress');
-  document.getElementById('tableTitle').textContent = isAll ? '📋 सभी Records' : (dateSelect.value===todayISO?'📋 आज के Beneficiaries':dateSelect.value===yesterdayISO?'📋 कल के Beneficiaries':'📋 '+formatDate(dateSelect.value));
+  document.getElementById('progressLabel').textContent = isAll ? 'total Progress' : (dateSelect.value===todayISO?'आज का Progress':dateSelect.value===yesterdayISO?'कल का Progress':'इस दिन का Progress');
+  document.getElementById('tableTitle').textContent = isAll ? '📋 All  Records' : (dateSelect.value===todayISO?'📋 आज के Beneficiaries':dateSelect.value===yesterdayISO?'📋 कल के Beneficiaries':'📋 '+formatDate(dateSelect.value));
   renderTable();
 }
 
