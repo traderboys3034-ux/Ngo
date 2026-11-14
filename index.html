@@ -1326,11 +1326,7 @@ function renderTable() {
       <td style="white-space:nowrap">${ICONS[r.seva]||'🤝'} ${esc(r.seva)}</td>
       <td style="font-variant-numeric:tabular-nums;white-space:nowrap;font-size:0.8rem;color:var(--fg-muted)">${r.tarikh}</td>
       <td><span class="badge badge-${r.status}">${r.status==='complete'?'✅ Complete':'⏳ Pending'}</span></td>
-      <td><div class="action-btns">
-        ${r.status==='pending'?`<button class="btn-done" onclick="markComplete(${r.id})">✅ Done</button>`:''}
-        <button class="btn-edit-row" onclick="openModal(${r.id})" title="Edit">✏️</button>
-        <button class="btn-del" onclick="deleteRecord(${r.id})" title="Delete">🗑️</button>
-      </div></td>
+      
     </tr>
   `).join('');
 }
