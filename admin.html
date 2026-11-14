@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel | Rosani Asahaya Seva</title>
+<style>
+  *{box-sizing:border-box;font-family:Arial,sans-serif}
+  body{margin:0;background:#f4f6f9;color:#222}
+  .layout{display:flex;min-height:100vh}
+  .sidebar{width:240px;background:#111827;color:#fff;padding:20px}
+  .sidebar h2{margin:0 0 25px;font-size:20px}
+  .sidebar button{display:block;width:100%;text-align:left;background:transparent;color:#cbd5e1;border:0;padding:12px;border-radius:8px;margin-bottom:8px;cursor:pointer;font-size:15px}
+  .sidebar button:hover,.sidebar button.active{background:#2563eb;color:#fff}
+  .main{flex:1;padding:25px}
+  .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+  .card{background:#fff;border-radius:12px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,.06);margin-bottom:20px}
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:15px}
+  .stat{background:#fff;padding:18px;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+  .stat h3{margin:0;font-size:14px;color:#555}
+  .stat p{margin:8px 0 0;font-size:28px;font-weight:bold}
+  input,select,textarea{width:100%;padding:10px;border:1px solid #d1d5db;border-radius:8px;margin:8px 0}
+  .btn{background:#2563eb;color:#fff;border:0;padding:10px 16px;border-radius:8px;cursor:pointer}
+  .btn.red{background:#dc2626}
+  .btn.green{background:#16a34a}
+  table{width:100%;border-collapse:collapse}
+  th,td{padding:10px;border-bottom:1px solid #e5e7eb;text-align:left;font-size:14px}
+  th{background:#f9fafb}
+  .hidden{display:none}
+  .login{max-width:380px;margin:80px auto;background:#fff;padding:30px;border-radius:14px;box-shadow:0 4px 20px rgba(0,0,0,.08)}
+  @media(max-width:760px){.layout{flex-direction:column}.sidebar{width:100%}}
+</style>
+</head>
+<body>
+
+<div id="loginScreen" class="login">
+  <h2>Admin Login</h2>
+  <input id="email" type="email" placeholder="Admin email">
+  <input id="password" type="password" placeholder="Password">
+  <button class="btn" onclick="login()">Login</button>
+  <p id="loginError" style="color:red"></p>
+</div>
+
+<div id="panel" class="layout hidden">
+  <div class="sidebar">
+    <h2>Rosani Admin</h2>
+    <button class="active" onclick="showSection('dashboard',this)">Dashboard</button>
+    <button onclick="showSection('data',this)">Website Data</button>
+    <button onclick="showSection('settings',this)">Site Settings</button>
+    <button onclick="showSection('admins',this)">Admins</button>
+    <button onclick="logout()">Logout</button>
+  </div>
+
+  <div class="main">
+    <div class="topbar">
+      <h2 id="sectionTitle">Dashboard</h2>
+      <span id="adminEmail"></span>
+    </div>
+
+    <div id="dashboard">
+      <div class="stats">
+        <div class="stat"><h3>Beneficiaries</h3><p id="countBeneficiaries">0</p></div>
+        <div class="stat"><h3>Donations</h3><p id="countDonations">0</p></div>
+        <div class="stat"><h3>Contacts</h3><p id="countContacts">0</p></div>
+        <div class="stat"><h3>Volunteers</h3><p id="countVolunteers">0</p></div>
+      </div>
+    </div>
+
+    <div id="data" class="hidden">
+      <div class="card">
+        <h3>Manage Any Firestore Collection</h3>
+        <input id="collectionName" placeholder="Collection name, e.g. beneficiaries">
+        <button class="btn" onclick="loadCollection()">Load Data</button>
+        <button class="btn green" onclick="addDocument()">Add New</button>
+      </div>
+
+      <div class="card">
+        <h3>Records</h3>
+        <div style="overflow:auto">
+          <table>
+            <thead><tr><th>Document ID</th><th>Data</th><th>Action</th></tr></thead>
+            <tbody id="recordsTable"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div id="settings" class="hidden">
+      <div class="card">
+        <h3>Website Settings</h3>
+        <p>Is document se website ka text, phone, address, links, banner aur other settings control karein.</p>
+        <input id="settingsDoc" value="settings/main">
+        <button class="btn" onclick="loadSettings()">Load Settings</button>
+        <textarea id="settingsJson" rows="14" placeholder='{"siteName":"Rosani Asahaya Seva","phone":"0000000000"}'></textarea>
+        <button class="btn green" onclick="saveSettings()">Save Settings</button>
+      </div>
+    </div>
+
+    <div id="admins" class="hidden">
+      <div class="card">
+        <h3>Admin Users</h3>
+        <input id="adminUid" placeholder="Firebase Auth UID">
+        <button class="btn green" onclick="addAdmin()">Make Admin</button>
+        <p>Firestore mein <b>admins</b> collection mein UID document banega. Sirf yeh UID admin access payega.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } 
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, collection, getDocs, doc, getDoc, setDoc, deleteDoc, addDoc } 
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyD8q2-R6s9qLzrh1SSm-MkL-gAXD1EHh6A",
+  authDomain: "rosani-asahaya-seva.firebaseapp.com",
+  projectId: "rosani-asahaya-seva",
+  storageBucket: "rosani-asahaya-seva.firebasestorage.app",
+  messagingSenderId: "256587001716",
+  appId: "1:256587001716:web:922663300412f781034621",
+  measurementId: "G-T01JDQ8370"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+let currentCollection = "";
+
+window.login = async () => {
+  try {
+    await signInWithEmailAndPassword(auth, email.value, password.value);
+  } catch (e) {
+    loginError.textContent = e.message;
+  }
+};
+
+window.logout = async () => await signOut(auth);
+
+onAuthStateChanged(auth, async user => {
+  if (!user) {
+    loginScreen.classList.remove("hidden");
+    panel.classList.add("hidden");
+    return;
+  }
+
+  const adminDoc = await getDoc(doc(db, "admins", user.uid));
+  if (!adminDoc.exists()) {
+    alert("Aap admin nahi hain. Firestore ke admins collection mein apna UID add karwayein.");
+    await signOut(auth);
+    return;
+  }
+
+  loginScreen.classList.add("hidden");
+  panel.classList.remove("hidden");
+  adminEmail.textContent = user.email;
+  loadCounts();
+});
+
+window.showSection = (id, btn) => {
+  ["dashboard","data","settings","admins"].forEach(x =>
+    document.getElementById(x).classList.add("hidden")
+  );
+  document.getElementById(id).classList.remove("hidden");
+  document.querySelectorAll(".sidebar button").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+  sectionTitle.textContent = id.toUpperCase();
+};
+
+async function countDocs(name, target) {
+  try {
+    const snap = await getDocs(collection(db, name));
+    document.getElementById(target).textContent = snap.size;
+  } catch {
+    document.getElementById(target).textContent = "0";
+  }
+}
+
+window.loadCounts = () => {
+  countDocs("beneficiaries","countBeneficiaries");
+  countDocs("donations","countDonations");
+  countDocs("contacts","countContacts");
+  countDocs("volunteers","countVolunteers");
+};
+
+window.loadCollection = async () => {
+  currentCollection = collectionName.value.trim();
+  if (!currentCollection) return alert("Collection name likhein");
+
+  const snap = await getDocs(collection(db, currentCollection));
+  recordsTable.innerHTML = "";
+
+  snap.forEach(d => {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${d.id}</td>
+      <td><code>${JSON.stringify(d.data()).slice(0,180)}...</code></td>
+      <td>
+        <button class="btn" onclick="editDoc('${d.id}')">Edit</button>
+        <button class="btn red" onclick="deleteDocById('${d.id}')">Delete</button>
+      </td>`;
+    recordsTable.appendChild(row);
+  });
+
+  if (!snap.size) recordsTable.innerHTML = `<tr><td colspan="3">No records found</td></tr>`;
+};
+
+window.addDocument = async () => {
+  const data = prompt("JSON data likhein:\nExample:\n{\"name\":\"Ramesh\",\"need\":\"Food\",\"status\":\"Pending\"}");
+  if (!data) return;
+  try {
+    await addDoc(collection(db, currentCollection), JSON.parse(data));
+    alert("Record added");
+    loadCollection();
+  } catch (e) { alert(e.message); }
+};
+
+window.editDoc = async id => {
+  const ref = doc(db, currentCollection, id);
+  const snap = await getDoc(ref);
+  const data = prompt("Updated JSON:", JSON.stringify(snap.data(), null, 2));
+  if (!data) return;
+  try {
+    await setDoc(ref, JSON.parse(data), { merge: true });
+    alert("Updated");
+    loadCollection();
+  } catch (e) { alert(e.message); }
+};
+
+window.deleteDocById = async id => {
+  if (!confirm("Delete this record?")) return;
+  await deleteDoc(doc(db, currentCollection, id));
+  loadCollection();
+};
+
+window.loadSettings = async () => {
+  const ref = doc(db, "settings", "main");
+  const snap = await getDoc(ref);
+  settingsJson.value = snap.exists() ? JSON.stringify(snap.data(), null, 2) : "{}";
+};
+
+window.saveSettings = async () => {
+  try {
+    await setDoc(doc(db, "settings", "main"), JSON.parse(settingsJson.value), { merge: true });
+    alert("Settings saved");
+  } catch (e) { alert(e.message); }
+};
+
+window.addAdmin = async () => {
+  const uid = adminUid.value.trim();
+  if (!uid) return alert("UID likhein");
+  await setDoc(doc(db, "admins", uid), { role: "admin", addedAt: new Date().toISOString() });
+  alert("Admin added");
+};
+</script>
+</body>
+  </html>
