@@ -868,8 +868,8 @@ tbody tr:hover td { background: var(--accent-light); }
     <!-- Date Bar -->
     <div class="date-bar" id="datebar">
       <div class="date-quick-btns">
-        <button class="btn-date-quick" id="btnYesterday" onclick="setDateQuick('yesterday')">कल (Kal)</button>
-        <button class="btn-date-quick active-date" id="btnToday" onclick="setDateQuick('today')">आज (Aaj)</button>
+        <button class="btn-date-quick" id="btnYesterday" onclick="setDateQuick('yesterday')">(yesterday)</button>
+        <button class="btn-date-quick active-date" id="btnToday" onclick="setDateQuick('today')">(today)</button>
       </div>
       <input type="date" class="date-input" id="dateSelect">
       <span class="date-display" id="dateDisplay"></span>
@@ -914,7 +914,7 @@ tbody tr:hover td { background: var(--accent-light); }
         <span class="table-title" id="tableTitle">📋 आज के Beneficiaries</span>
         <input type="search" class="search-box" id="searchBox" placeholder="🔍 नाम या सेवा खोजें..." oninput="renderTable()">
         <div class="filter-tabs">
-          <button class="filter-tab active" onclick="setFilter('all', this)">सभी</button>
+          <button class="filter-tab active" onclick="setFilter('all', this)">All</button>
           <button class="filter-tab" onclick="setFilter('pending', this)">⏳ Pending</button>
           <button class="filter-tab" onclick="setFilter('complete', this)">✅ Complete</button>
         </div>
@@ -936,7 +936,7 @@ tbody tr:hover td { background: var(--accent-light); }
         <div class="empty-state" id="emptyState" hidden>
           <div class="empty-icon">📭</div>
           <div class="empty-title">कोई रिकॉर्ड नहीं मिला</div>
-          <div class="empty-desc">नया रिकॉर्ड जोड़ने के लिए "+ नया जोड़ें" दबाएं</div>
+          <div class="empty-desc">नया रिकॉर्ड जोड़ने के लिए "+ new person" click</div>
         </div>
       </div>
     </div>
