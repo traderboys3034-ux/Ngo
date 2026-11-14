@@ -1323,18 +1323,7 @@ function renderTable() {
     <tr>
       <td style="color:var(--fg-muted);font-variant-numeric:tabular-nums;font-size:0.8rem">${i+1}</td>
       <td><strong>${esc(r.naam)}</strong>${r.notes?`<br><small style="color:var(--fg-muted)">${esc(r.notes)}</small>`:''}</td>
-      <td style="white-space:nowrap">${ICONS[r.seva]||'🤝'} ${esc(r.seva)}</td>
-      <td style="font-variant-numeric:tabular-nums;white-space:nowrap;font-size:0.8rem;color:var(--fg-muted)">${r.tarikh}</td>
-      <td><span class="badge badge-${r.status}">${r.status==='complete'?'✅ Complete':'⏳ Pending'}</span></td>
       
-    </tr>
-  `).join('');
-}
-
-function renderCategory() {
-  const cats = [...new Set(records.map(r=>r.seva))].sort();
-  const grid = document.getElementById('categoryGrid');
-  if (!cats.length) { grid.innerHTML='<div class="empty-state"><div class="empty-icon">📭</div><div class="empty-title">कोई रिकॉर्ड नहीं</div></div>'; return; }
   grid.innerHTML = cats.map(cat => {
     const list = records.filter(r=>r.seva===cat);
     const complete = list.filter(r=>r.status==='complete').length;
