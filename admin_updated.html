@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Rosani Asahaya Seva — Admin Panel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F7F5F2;--card:#fff;--fg:#18181B;--muted:#71717A;--accent:#D4522A;--accent2:#2563EB;--green:#16A34A;--amber:#D97706;--red:#DC2626;--border:#E4E4E7;--shadow:0 8px 24px rgba(0,0,0,.08);--r:16px}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:15px "Noto Sans Devanagari",Poppins,sans-serif}
+button,input,select,textarea{font:inherit}.hidden{display:none!important}
+.login{min-height:100vh;display:grid;place-items:center;padding:20px;background:linear-gradient(135deg,#fff7f3,#f7f5f2)}
+.login-card{width:min(430px,100%);background:var(--card);border:1px solid var(--border);border-radius:22px;padding:30px;box-shadow:var(--shadow)}
+.brand{display:flex;align-items:center;gap:12px;margin-bottom:22px}.logo{width:52px;height:52px;border-radius:50%;object-fit:cover;background:#fbe9e3}.brand h1{font:800 1.15rem Poppins;margin:0}.brand p{margin:2px 0 0;color:var(--muted);font-size:.78rem}
+h2{font:800 1.2rem Poppins;margin:0 0 6px}.sub{color:var(--muted);font-size:.85rem;margin:0 0 20px}
+.field{margin:14px 0}.label{display:block;font:700 .75rem Poppins;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em}
+.input{width:100%;padding:11px 13px;border:1.5px solid var(--border);border-radius:10px;background:#fff;color:var(--fg);outline:none}.input:focus{border-color:var(--accent);box-shadow:0 0 0 3px #fbe9e3}
+.btn{border:0;border-radius:10px;padding:11px 16px;font:700 .84rem Poppins;cursor:pointer}.primary{background:var(--accent);color:#fff}.primary:hover{background:#b84422}.secondary{background:#fff;color:var(--fg);border:1.5px solid var(--border)}.danger{background:#fee2e2;color:var(--red);border:1px solid #fecaca}.green{background:var(--green);color:#fff}.btn:disabled{opacity:.55;cursor:not-allowed}
+.msg{padding:10px 12px;border-radius:10px;margin-top:12px;font-size:.83rem}.err{background:#fee2e2;color:#991b1b}.ok{background:#dcfce7;color:#166534}.info{background:#eff6ff;color:#1e40af}
+.app{min-height:100vh}.top{position:sticky;top:0;z-index:20;background:var(--accent);color:#fff;box-shadow:0 4px 14px rgba(0,0,0,.12)}.topin{max-width:1150px;margin:auto;padding:12px 16px;display:flex;align-items:center;gap:12px}.top-logo{width:42px;height:42px;border-radius:50%;object-fit:cover;border:2px solid #ffffff55}.top h1{font:800 1rem Poppins;margin:0}.top small{opacity:.8}.top-spacer{flex:1}.logout{background:#ffffff1f;color:#fff;border:1px solid #ffffff55}
+.main{max-width:1150px;margin:auto;padding:20px 16px 50px}.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px}.toolbar h2{flex:1;min-width:200px}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px}.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px;box-shadow:0 2px 8px #0000000a}.num{font:800 2rem Poppins}.muted{color:var(--muted);font-size:.76rem}.blue{color:var(--accent2)}.orange{color:var(--amber)}.greenText{color:var(--green)}
+.panel{background:var(--card);border:1px solid var(--border);border-radius:var(--r);box-shadow:0 2px 8px #0000000a;overflow:hidden}.panel-head{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;gap:10px;align-items:center;flex-wrap:wrap}.panel-head h3{font:700 .95rem Poppins;margin:0;flex:1}.search{width:230px;max-width:100%}.filters{display:flex;gap:5px}.filter{border:1px solid var(--border);background:#fff;border-radius:20px;padding:6px 10px;font:700 .72rem Poppins;color:var(--muted);cursor:pointer}.filter.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;min-width:760px}th{padding:10px 12px;text-align:left;background:#fafafa;color:var(--muted);font:700 .7rem Poppins;text-transform:uppercase;border-bottom:1px solid var(--border)}td{padding:11px 12px;border-bottom:1px solid var(--border);font-size:.84rem;vertical-align:middle}tr:last-child td{border-bottom:0}.badge{display:inline-block;padding:4px 9px;border-radius:20px;font:700 .7rem Poppins}.pending{background:#fef3c7;color:#92400e}.complete{background:#dcfce7;color:#166534}.actions{display:flex;gap:5px;flex-wrap:wrap}.smallbtn{padding:5px 8px;border-radius:7px;font-size:.72rem}
+.empty{text-align:center;padding:35px;color:var(--muted)}
+.modal{position:fixed;inset:0;background:#0008;z-index:50;display:grid;place-items:center;padding:16px}.modal-box{background:var(--card);width:min(500px,100%);max-height:92vh;overflow:auto;border-radius:18px;padding:22px;box-shadow:0 18px 50px #0004}.modal-head{display:flex;align-items:center;margin-bottom:12px}.modal-head h3{font:800 1rem Poppins;flex:1;margin:0}.close{border:0;background:transparent;font-size:1.4rem;cursor:pointer}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.actions-end{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}
+.note{font-size:.75rem;color:var(--muted);margin-top:10px;line-height:1.5}
+@media(max-width:700px){.cards{grid-template-columns:1fr 1fr}.grid2{grid-template-columns:1fr}.top h1{font-size:.9rem}.main{padding:14px 10px 40px}.login-card{padding:24px}}
+@media(max-width:430px){.cards{grid-template-columns:1fr}.cards .card{display:flex;align-items:center;gap:12px}.num{font-size:1.7rem}}
+</style>
+</head>
+<body>
+<section id="loginView" class="login">
+  <div class="login-card">
+    <div class="brand"><img src="logo.png" class="logo" alt="Rosani Asahaya Seva logo" onerror="this.style.display='none'"><div><h1>Rosani Asahaya Seva</h1><p>Secure Admin Panel</p></div></div>
+    <h2>Admin Login</h2><p class="sub">Firebase Email/Password se login karein.</p>
+    <form id="loginForm">
+      <div class="field"><label class="label">Email</label><input id="email" class="input" type="email" required autocomplete="username" placeholder="Admin email"></div>
+      <div class="field"><label class="label">Password</label><input id="password" class="input" type="password" required autocomplete="current-password" placeholder="Password"></div>
+      <button id="loginBtn" class="btn primary" style="width:100%">🔐 Login</button>
+    </form>
+    <div id="loginMsg" class="msg hidden"></div>
+    <p class="note">Admin access Firebase Authentication aur Realtime Database Rules se protected hai.</p>
+  </div>
+</section>
+
+<section id="appView" class="app hidden">
+<header class="top"><div class="topin"><img src="logo.png" class="top-logo" alt="Logo" onerror="this.style.display='none'"><div><h1>Rosani Asahaya Seva — Admin</h1><small id="userEmail"></small></div><div class="top-spacer"></div><button id="logoutBtn" class="btn logout">Logout</button></div></header>
+<main class="main">
+  <div class="toolbar"><h2>Beneficiary Management</h2><button id="addBtn" class="btn primary">➕ Add Beneficiary</button></div>
+  <div class="cards"><div class="card"><div class="num blue" id="total">0</div><div class="muted">Total Records</div></div><div class="card"><div class="num orange" id="pending">0</div><div class="muted">Pending</div></div><div class="card"><div class="num greenText" id="done">0</div><div class="muted">Complete</div></div></div>
+  <div id="appMsg" class="msg hidden"></div>
+  <section class="panel"><div class="panel-head"><h3>📋 Beneficiary Records</h3><input id="search" class="input search" placeholder="🔍 Name / service search"><div class="filters"><button class="filter active" data-filter="all">All</button><button class="filter" data-filter="pending">Pending</button><button class="filter" data-filter="complete">Complete</button></div></div>
+  <div class="table-wrap"><table><thead><tr><th>#</th><th>Name</th><th>Service</th><th>Date</th><th>Status</th><th>Notes</th><th>Actions</th></tr></thead><tbody id="tbody"></tbody></table><div id="empty" class="empty">No records found.</div></div></section>
+  <p class="note">Data is stored in Firebase Realtime Database under <b>publicBeneficiaries</b>. Your existing public website can listen to the same path for live updates.</p>
+</main></section>
+
+<div id="modal" class="modal hidden"><div class="modal-box"><div class="modal-head"><h3 id="modalTitle">➕ Add Beneficiary</h3><button class="close" id="closeModal">×</button></div>
+<form id="recordForm"><input type="hidden" id="editId">
+<div class="field"><label class="label">Name *</label><input id="name" class="input" required placeholder="Beneficiary name"></div>
+<div class="grid2"><div class="field"><label class="label">Age *</label><input id="age" class="input" type="number" min="0" required placeholder="Age"></div><div class="field"><label class="label">Date *</label><input id="date" class="input" type="date" required></div></div>
+<div class="field"><label class="label">Need *</label><input id="need" class="input" required placeholder="Type need manually"></div>
+<div class="field"><label class="label">Person Details</label><textarea id="personDetails" class="input" rows="4" placeholder="Person details..."></textarea></div>
+<div class="field"><label class="label">Status</label><select id="status" class="input"><option value="pending">⏳ Pending</option><option value="complete">✅ Complete</option></select></div>
+<div class="field"><label class="label">Notes (optional)</label><textarea id="notes" class="input" rows="4" placeholder="Private/internal notes..."></textarea></div>
+<div class="actions-end"><button type="button" id="cancelModal" class="btn secondary">Cancel</button><button type="submit" id="saveBtn" class="btn primary">💾 Save</button></div></form></div></div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script>
+const firebaseConfig={apiKey:"AIzaSyD8q2-R6s9qLzrh1SSm-MkL-gAXD1EHh6A",authDomain:"rosani-asahaya-seva.firebaseapp.com",databaseURL:"https://rosani-asahaya-seva-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"rosani-asahaya-seva",storageBucket:"rosani-asahaya-seva.firebasestorage.app",messagingSenderId:"256587001716",appId:"1:256587001716:web:922663300412f781034621",measurementId:"G-T01JDQ8370"};
+firebase.initializeApp(firebaseConfig);const auth=firebase.auth(),db=firebase.database(),path=db.ref("publicBeneficiaries");let records=[],filter="all";
+const $=id=>document.getElementById(id),esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));const today=()=>new Date().toISOString().slice(0,10);
+function showMsg(el,text,type="info"){el.textContent=text;el.className="msg "+type;el.classList.remove("hidden")}
+function hideMsg(el){el.classList.add("hidden")}
+auth.onAuthStateChanged(user=>{if(user){$("loginView").classList.add("hidden");$("appView").classList.remove("hidden");$("userEmail").textContent=user.email||"Authenticated admin";loadRecords()}else{$("appView").classList.add("hidden");$("loginView").classList.remove("hidden")}});
+$("loginForm").addEventListener("submit",async e=>{e.preventDefault();hideMsg($("loginMsg"));$("loginBtn").disabled=true;$("loginBtn").textContent="Logging in…";try{await auth.signInWithEmailAndPassword($("email").value.trim(),$("password").value)}catch(err){showMsg($("loginMsg"),friendlyAuthError(err),"err")}finally{$("loginBtn").disabled=false;$("loginBtn").textContent="🔐 Login"}});
+$("logoutBtn").onclick=()=>auth.signOut();
+function friendlyAuthError(e){const c=e?.code||"";if(c.includes("invalid-credential")||c.includes("wrong-password")||c.includes("user-not-found"))return"Email ya password galat hai.";if(c.includes("too-many-requests"))return"Bahut attempts ho gaye. Thodi der baad try karein.";return e?.message||"Login failed."}
+function loadRecords(){path.on("value",snap=>{const data=snap.val()||{};records=Object.entries(data).map(([id,r])=>({id,name:r.name||r.naam||"",age:r.age??"",service:r.helpType||r.need||r.seva||"",need:r.need||r.helpType||r.seva||"",personDetails:r.personDetails||r.details||"",date:r.date||r.tarikh||"",status:(r.status==="complete"||r.status==="पूर्ण")?"complete":"pending",notes:r.notes||""})).sort((a,b)=>String(b.date).localeCompare(String(a.date)));render()},err=>showMsg($("appMsg"),"Firebase read failed: "+err.message,"err"))}
+function render(){const total=records.length,done=records.filter(r=>r.status==="complete").length;$("total").textContent=total;$("done").textContent=done;$("pending").textContent=total-done;const q=$("search").value.trim().toLowerCase();const list=records.filter(r=>(filter==="all"||r.status===filter)&&(!q||r.name.toLowerCase().includes(q)||r.service.toLowerCase().includes(q)));$("empty").classList.toggle("hidden",list.length>0);$("tbody").innerHTML=list.map((r,i)=>`<tr><td>${i+1}</td><td><b>${esc(r.name)}</b></td><td>${esc(r.service)}</td><td>${esc(r.date)}</td><td><span class="badge ${r.status}">${r.status==="complete"?"✅ Complete":"⏳ Pending"}</span></td><td>${esc(r.notes)}</td><td><div class="actions">${r.status!=="complete"?`<button class="btn smallbtn green" onclick="completeRecord('${esc(r.id)}')">✓ Complete</button>`:""}<button class="btn smallbtn secondary" onclick="editRecord('${esc(r.id)}')">Edit</button><button class="btn smallbtn danger" onclick="deleteRecord('${esc(r.id)}')">Delete</button></div></td></tr>`).join("")}
+$("search").addEventListener("input",render);document.querySelectorAll(".filter").forEach(b=>b.onclick=()=>{document.querySelectorAll(".filter").forEach(x=>x.classList.remove("active"));b.classList.add("active");filter=b.dataset.filter;render()});
+function openModal(r=null){$("recordForm").reset();$("editId").value=r?.id||"";$("date").value=r?.date||today();$("status").value=r?.status||"pending";$("name").value=r?.name||"";$("age").value=r?.age??"";$("need").value=r?.need||r?.service||"";$("personDetails").value=r?.personDetails||"";$("notes").value=r?.notes||"";$("modalTitle").textContent=r?"✏️ Edit Beneficiary":"➕ Add Beneficiary";$("modal").classList.remove("hidden");$("name").focus()}
+function closeModal(){$("modal").classList.add("hidden")}
+$("addBtn").onclick=()=>openModal();$("closeModal").onclick=closeModal;$("cancelModal").onclick=closeModal;$("modal").addEventListener("click",e=>{if(e.target===$("modal"))closeModal()});
+$("recordForm").addEventListener("submit",async e=>{e.preventDefault();$("saveBtn").disabled=true;const id=$("editId").value,data={name:$("name").value.trim(),age:$("age").value.trim(),need:$("need").value.trim(),helpType:$("need").value.trim(),personDetails:$("personDetails").value.trim(),date:$("date").value,status:$("status").value,notes:$("notes").value.trim()};try{if(id)await path.child(id).update(data);else await path.push(data);closeModal();showMsg($("appMsg"),id?"Record updated successfully.":"Record added successfully.","ok")}catch(err){showMsg($("appMsg"),"Save failed: "+err.message+". Agar Permission denied aaye, Firebase Rules me admin UID check karein.","err")}finally{$("saveBtn").disabled=false}});
+window.editRecord=id=>{const r=records.find(x=>x.id===id);if(r)openModal(r)};window.completeRecord=async id=>{try{await path.child(id).update({status:"complete"});showMsg($("appMsg"),"Record marked complete.","ok")}catch(e){showMsg($("appMsg"),"Permission denied: "+e.message,"err")}};window.deleteRecord=async id=>{const r=records.find(x=>x.id===id);if(!r||!confirm(`"${r.name}" record delete karein?`))return;try{await path.child(id).remove();showMsg($("appMsg"),"Record deleted.","ok")}catch(e){showMsg($("appMsg"),"Delete failed: "+e.message,"err")}};
+</script>
+</body>
+</html>
